@@ -210,6 +210,6 @@ def get_file(file_name):
     url_css = 'a.filename'
 
     def get_url():
-        return world.css_find(url_css)[index]._element.get_attribute('href')
+        return world.css_find(url_css)[index]._element.get_attribute('data-studio-url')
     url = world.retry_on_exception(get_url)
     return requests.get(url)
