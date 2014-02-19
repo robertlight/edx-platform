@@ -163,7 +163,7 @@ def _studio_wrap_xblock(xblock, view, frag, context, display_name_only=False):
     template_context = {
         'xblock_context': context,
         'xblock': xblock,
-        'content': xblock.display_name if display_name_only else frag.content,
+        'content': frag.content,
     }
     if xblock.category == 'vertical':
         template = 'studio_vertical_wrapper.html'

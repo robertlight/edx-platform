@@ -44,13 +44,16 @@ def xblock_studio_url(xblock):
     """
     category = xblock.category
     parent_locators = modulestore().get_parent_locations(xblock.location, None)
-    parent_xblock = modulestore().get_item(parent_locators[0])
-    parent_category = parent_xblock.category
+    if len(parent_locators) > 0:
+        parent_xblock = modulestore().get_item(parent_locators[0])
+        parent_category = parent_xblock.category
+    else:
+        parent_category = None
     if category == 'course':
         prefix = 'course'
     elif category == 'vertical' and parent_category == 'sequential':
         prefix = 'unit'     # only show the unit page for verticals directly beneath a subsection
-    elif not xblock.has_children or category == 'sequential':
+    elif not xblock.has_children or category == 'sequential' or category == 'chapter':
         prefix = None   # there is no page for this xblock
     else:
         prefix = 'container'
