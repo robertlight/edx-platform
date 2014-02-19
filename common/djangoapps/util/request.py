@@ -20,6 +20,10 @@ def safe_get_host(request):
         return MicrositeConfiguration.get_microsite_configuration_value('site_domain', settings.SITE_NAME)
 
 def embargo_check(func):
+    return redirect('embargo')
+
+"""
+def embargo_check(func):
     """
     Decorator that redirects the user to an "embargo information" page
     iff (1) that course is embargoed, and (2) the user is accessing the
@@ -34,3 +38,4 @@ def embargo_check(func):
                 return redirect('embargo')
             return func(self, request, *args, **kwargs)
         return dispatch_wrapper
+"""
