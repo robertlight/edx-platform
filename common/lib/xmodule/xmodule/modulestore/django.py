@@ -6,14 +6,18 @@ Passes settings.MODULESTORE as kwargs to MongoModuleStore
 
 from __future__ import absolute_import
 from importlib import import_module
-
 import re
 
 from django.conf import settings
 from django.core.cache import get_cache, InvalidCacheBackendError
 from django.dispatch import Signal
+import django.utils
+
 from xmodule.modulestore.loc_mapper_store import LocMapperStore
 from xmodule.util.django import get_current_request_hostname
+
+from util.date_utils import strftime_localized
+
 
 # We may not always have the request_cache module available
 try:
@@ -68,6 +72,7 @@ def create_modulestore_instance(engine, doc_store_config, options):
         xblock_mixins=getattr(settings, 'XBLOCK_MIXINS', ()),
         xblock_select=getattr(settings, 'XBLOCK_SELECT_FUNCTION', None),
         doc_store_config=doc_store_config,
+        i18n_service=ModuleI18nService(),
         **_options
     )
 
@@ -186,3 +191,20 @@ def editable_modulestore(name='default'):
 
     else:
         return None
+
+
+class ModuleI18nService(object):
+    """
+    Implement the XBlock runtime "i18n" service.
+
+    Mostly a pass-through to Django's translation module.
+    django.utils.translation implements the gettext.Translations interface (it
+    has ugettext, ungettext, etc), so we can use it directly as the runtime
+    i18n service.
+
+    """
+    def __getattr__(self, name):
+        return getattr(django.utils.translation, name)
+
+    def strftime(self, *args, **kwargs):
+        return strftime_localized(*args, **kwargs)
