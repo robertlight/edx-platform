@@ -76,7 +76,7 @@ class RegistrationTest(UniqueCourseTest):
             if course_id in available:
                 return True
             else:
-                self.browser.reload()
+                self.find_courses_page.visit()
                 return False
 
         return fulfill(EmptyPromise(
