@@ -26,6 +26,7 @@ from courseware.model_data import FieldDataCache
 from .module_render import toc_for_course, get_module_for_descriptor
 from courseware.models import StudentModule, StudentModuleHistory
 from course_modes.models import CourseMode
+from util.request import embargo_check
 
 from student.models import UserTestGroup, CourseEnrollment
 from student.views import course_from_id, single_course_reverification_info
@@ -231,6 +232,7 @@ def index(request, course_id, chapter=None, section=None,
 
      - HTTPresponse
     """
+    from nose.tools import set_trace; set_trace()
     user = User.objects.prefetch_related("groups").get(id=request.user.id)
     request.user = user  # keep just one instance of User
     course = get_course_with_access(user, course_id, 'load', depth=2)
@@ -442,6 +444,7 @@ def jump_to(request, course_id, location):
         return redirect('courseware_position', course_id=course_id, chapter=chapter, section=section, position=position)
 
 
+@embargo_check
 @ensure_csrf_cookie
 def course_info(request, course_id):
     """
