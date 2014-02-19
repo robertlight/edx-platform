@@ -3,6 +3,7 @@ from django.conf import settings
 from microsite_configuration.middleware import MicrositeConfiguration
 from django.contrib.gis.geoip import GeoIP
 from functools import wraps
+from django.shortcuts import redirect
 
 
 def safe_get_host(request):
