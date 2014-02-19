@@ -50,8 +50,7 @@ class RegistrationTest(UniqueCourseTest):
         self.find_courses_page.visit()
 
         # Expect that the fixture course exists
-        course_ids = self.find_courses_page.course_id_list
-        self.assertIn(self.course_id, course_ids)
+        self.assert_course_available(self.course_id)
 
         # Go to the course about page and click the register button
         self.course_about_page.visit()
@@ -68,6 +67,23 @@ class RegistrationTest(UniqueCourseTest):
         # Check that we're registered for the course
         course_names = dashboard.available_courses
         self.assertIn(self.course_info['display_name'], course_names)
+
+    def assert_course_available(self, course_id):
+        # Occassionally this does not show up immediately,
+        # so we wait and try reloading the page
+        def _check_course_available():
+            available = self.find_courses_page.course_id_list
+            if course_id in available:
+                return True
+            else:
+                self.browser.reload()
+                return False
+
+        return fulfill(EmptyPromise(
+            _check_course_available,
+            "Found course {course_id} in the list of available courses".format(course_id=course_id),
+            try_limit=3, try_interval=2
+        ))
 
 
 class LanguageTest(UniqueCourseTest):
