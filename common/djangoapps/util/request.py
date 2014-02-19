@@ -22,7 +22,10 @@ def safe_get_host(request):
 
 def embargo_check(func):
     def _wrapped_view(request, *args, **kwargs):
-        ip = request.META['HTTP_X_FORWARDED_FOR']
+        try:
+            ip = request.META['HTTP_X_FORWARDED_FOR']
+        except:
+            return func(request, *args, **kwargs)
         geoip = GeoIp()
         if geoip.country_code(ip) in EmbargoConfig.embargoed_countries_list():
             return redirect('embargo')
