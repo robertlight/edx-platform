@@ -43,5 +43,5 @@ def embargo_check(func):
             if geoip.country_code(ip) in EmbargoConfig.embargoed_countries_list():
                 return redirect('embargo')
             return func(self, request, *args, **kwargs)
-        return dispatch_wrapper
+        return dispatch_wrad
 """

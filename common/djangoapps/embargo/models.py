@@ -27,7 +27,7 @@ class EmbargoConfig(ConfigurationModel):
 		return [country.strip() for country in self.embargoed_countries.split(',')]
 
 	@property
-	def embargoed_courses_listself):
-		if not self.embargoed_courses.strip()
+	def embargoed_courses_list(self):
+		if not self.embargoed_courses.strip():
 			return []
 		return [course.strip() for course in self.embargoed_courses.split(',')]
