@@ -20,15 +20,21 @@ def safe_get_host(request):
         return MicrositeConfiguration.get_microsite_configuration_value('site_domain', settings.SITE_NAME)
 
 def embargo_check(func):
-    return redirect('embargo')
+    def _wrapped_view(request, *args, **kwargs):
+        ip = request.META['HTTP_X_FORWARDED_FOR']
+        geoip = GeoIp()
+        if geoip.country_code(ip) in EmbargoConfig.embargoed_countries_list():
+            return redirect('embargo')
+        return func(request, *args, **kwargs)
+    return _wrapped_view
 
 """
 def embargo_check(func):
-    """
+    """ """
     Decorator that redirects the user to an "embargo information" page
     iff (1) that course is embargoed, and (2) the user is accessing the
     site from an embargoed IP.
-    """
+    """ """
     @wraps(func)
     def dispatch_wrapper(self, request, *args, **kwargs):
         if course_id in EmbargoConfig.embargoed_courses_list():
