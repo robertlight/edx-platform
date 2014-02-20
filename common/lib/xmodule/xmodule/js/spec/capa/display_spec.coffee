@@ -124,9 +124,15 @@ describe 'Problem', ->
         expect(@problem.bind).toHaveBeenCalled()
 
   describe 'check_fd', ->
-    xit 'should have more specs written for this functionality', ->
-      expect(false)
+    beforeEach ->
+      @problem = new Problem($('.xblock-student_view'))
+      # Place an input of type file outside of problem.
+      $('.xblock-student_view').after('<input type="file" />')
+      spyOn(@problem, 'check')
 
+    it 'if input of type file is not present in problem, then check() is called', ->
+      @problem.check_fd()
+      expect(@problem.check).toHaveBeenCalled()
 
   describe 'check', ->
     beforeEach ->
@@ -509,5 +515,3 @@ describe 'Problem', ->
     xit 'serialize all answers', ->
       @problem.refreshAnswers()
       expect(@problem.answers).toEqual "input_1_1=one&input_1_2=two"
-
-
